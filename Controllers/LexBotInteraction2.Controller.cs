@@ -51,13 +51,8 @@ namespace LexBotBroker
                     ContentType = "text" // Default content type
                 };
 
-                if (intentState == "Fulfilled" && intentName == "Strategy")
+                if (intentState == "Fulfilled" && (intentName == "CreateStrategy" || intentName == "Navigation"))
                 {
-                    lexResponse.ContentType = "text";
-                }
-                else if (intentState == "Fulfilled"&& intentName == "Navigation")
-                {
-                    //lexResponse.Content = ManageAttributeScreen;
                     lexResponse.ContentType = "Url";
                 }
                 else if (intentState == "Failed")
