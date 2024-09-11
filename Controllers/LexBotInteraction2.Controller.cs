@@ -55,19 +55,9 @@ namespace LexBotBroker
                 {
                     lexResponse.ContentType = "text";
                 }
-                else if ((intentState == "Fulfilled" || intentState == "ReadyForFulfillment") && intentName == "Navigation")
+                else if (intentState == "Fulfilled"&& intentName == "Navigation")
                 {
-                    //lexResponse.Content = GlobalOptionScreen;
-                    lexResponse.Content = ManageAttributeScreen;
-                    lexResponse.ContentType = "Url";
-                }
-                //else if (intentState == "InProgress")
-                //{
-                //    lexResponse.ContentType = "Url";
-                //}
-                else if (intentState == "ReadyForFulfillment" && intentName == "Navigation")
-                {
-                    lexResponse.Content = GlobalOptionScreen;
+                    //lexResponse.Content = ManageAttributeScreen;
                     lexResponse.ContentType = "Url";
                 }
                 else if (intentState == "Failed")
@@ -90,7 +80,6 @@ namespace LexBotBroker
             var botAliasId = _configuration.GetValue<string>("LexBotSettings:BotAliasId");
             var botLanuage = _configuration.GetValue<string>("LexBotSettings:BotLanguage");
             var botSessionId = _configuration.GetValue<string>("LexBotSettings:SessionId");
-            
 
             lexRequest = new RecognizeTextRequest
             {
