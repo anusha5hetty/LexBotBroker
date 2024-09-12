@@ -21,6 +21,7 @@
     <PackageReference Include="AWSSDK.LexModelsV2" Version="3.7.0" />
     <PackageReference Include="AWSSDK.LexRuntimeV2" Version="3.7.400.17" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
   </ItemGroup>
 

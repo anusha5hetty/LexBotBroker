@@ -25,53 +25,53 @@ namespace LexBotBroker
       _lexModelBuildingService = lexModelBuildingService;
     }
 
-    [HttpGet("aliases/")]
-    public async Task<IActionResult> GetBotAliases()
-    {
-      var client = new AmazonLexModelsV2Client();
+    //[HttpGet("aliases/")]
+    //public async Task<IActionResult> GetBotAliases()
+    //{
+    //  var client = new AmazonLexModelsV2Client();
 
-      var request = new ListBotAliasesRequest
-      {
-        BotId = "",
-        MaxResults = 10 // Adjust as needed
-      };
+    //  var request = new ListBotAliasesRequest
+    //  {
+    //    BotId = "",
+    //    MaxResults = 10 // Adjust as needed
+    //  };
 
-      var response = await client.ListBotAliasesAsync(request);
-      foreach (var alias in response.BotAliasSummaries)
-      {
-        Console.WriteLine($"Alias Name: {alias.BotAliasName}, Alias Id: {alias.BotAliasId}");
-      }
+    //  var response = await client.ListBotAliasesAsync(request);
+    //  foreach (var alias in response.BotAliasSummaries)
+    //  {
+    //    Console.WriteLine($"Alias Name: {alias.BotAliasName}, Alias Id: {alias.BotAliasId}");
+    //  }
 
-      return Ok(response);
-    }
+    //  return Ok(response);
+    //}
 
-    [HttpGet("aliases2/")]
-    public async Task<IActionResult> GetBotAliases2()
-    {
-      var lexRequest = new GetBotAliasesRequest
-      {
-        BotName = "PortfoliosActions",
-        MaxResults = 10 // Adjust as needed
-      };
+    //[HttpGet("aliases2/")]
+    //public async Task<IActionResult> GetBotAliases2()
+    //{
+    //  var lexRequest = new GetBotAliasesRequest
+    //  {
+    //    BotName = "PortfoliosActions",
+    //    MaxResults = 10 // Adjust as needed
+    //  };
 
-      var response = await _lexModelBuildingService.GetBotAliasesAsync(lexRequest);
-      return Ok(response.BotAliases);
-    }
+    //  var response = await _lexModelBuildingService.GetBotAliasesAsync(lexRequest);
+    //  return Ok(response.BotAliases);
+    //}
 
-    [HttpPost]
-    public async Task<IActionResult> Post([FromBody] LexRequest request)
-    {
-      var lexRequest = new PostTextRequest
-      {
-        BotAlias = "",
-        BotName = "",
-        UserId = "UserId",
-        InputText = request.InputText
-      };
+    //[HttpPost]
+    //public async Task<IActionResult> Post([FromBody] LexRequest request)
+    //{
+    //  var lexRequest = new PostTextRequest
+    //  {
+    //    BotAlias = "",
+    //    BotName = "",
+    //    UserId = "UserId",
+    //    InputText = request.InputText
+    //  };
 
-      var response = await _lexClient.PostTextAsync(lexRequest);
-      return Ok(response.Message); 
-    }
+    //  var response = await _lexClient.PostTextAsync(lexRequest);
+    //  return Ok(response.Message); 
+    //}
   }
 
   public class LexRequest

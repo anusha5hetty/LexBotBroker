@@ -4,6 +4,9 @@ using Amazon.LexRuntimeV2.Model;
 using LexBotBroker.LexModel;
 using System.Net;
 using Microsoft.AspNetCore.Cors;
+using System.Text.Json.Serialization;
+using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 
 namespace LexBotBroker
@@ -15,11 +18,13 @@ namespace LexBotBroker
     {
       private readonly IAmazonLexRuntimeV2 _lexClient;
       private readonly IConfiguration _configuration;
+        private readonly ILogger _logger;
 
-      public LexBot2Controller(IAmazonLexRuntimeV2 lexClient, IConfiguration configuration)
+      public LexBot2Controller(ILogger<LexBot2Controller> logger, IAmazonLexRuntimeV2 lexClient, IConfiguration configuration)
         {
             _lexClient = lexClient;
             _configuration = configuration;
+            _logger = logger;
         }
 
       [HttpPost]
@@ -27,12 +32,36 @@ namespace LexBotBroker
       {
             try
             {
-                const string GlobalOptionScreen = "http://localhost/planview/AdminApplication/editglobaloptions.aspx"; 
-                const string ManageAttributeScreen = "http://localhost/planview/PPM/ManageAttributes.aspx";
-                const string ConfiguredScreen = "http://localhost/planview/ConfiguredScreens/AdminConfiguredScreens.aspx";
+                _logger.LogInformation("Entering the LexBot2Controller");
+                _logger.LogInformation($"Lex Request: {request.InputText.ToString()}");
+                string botId, botAliasId;
+                var botLanuage = _configuration.GetValue<string>("LexBotSettings:BotLanguage");
+                var botSessionId = _configuration.GetValue<string>("LexBotSettings:SessionId");
 
                 RecognizeTextRequest lexRequest;
-                SetRecognizeTextLexRequest(request, out lexRequest);
+
+                if (request.InputText.Contains("strategy", StringComparison.OrdinalIgnoreCase) && 
+                    request.InputText.Contains("create", StringComparison.OrdinalIgnoreCase)) 
+                { 
+                    botId = _configuration.GetValue<string>("LexBotSettings:BotId");
+                    botAliasId = _configuration.GetValue<string>("LexBotSettings:BotAliasId");
+                }
+                else
+                {
+                    botId = _configuration.GetValue<string>("LexBotSettings:NewBotId");
+                    botAliasId = _configuration.GetValue<string>("LexBotSettings:NewBotAliasId");
+                }
+
+                _logger.LogInformation($"We are using the BotId: {botId} and BotAliasId: {botAliasId}");
+
+                lexRequest = new RecognizeTextRequest
+                {
+                    BotAliasId = botAliasId,
+                    BotId = botId,
+                    LocaleId = botLanuage,
+                    SessionId = botSessionId,
+                    Text = request.InputText
+                };
 
                 var response = await _lexClient.RecognizeTextAsync(lexRequest);
                 if (response.HttpStatusCode != HttpStatusCode.OK)
@@ -60,30 +89,14 @@ namespace LexBotBroker
                     lexResponse.ContentType = "text";
                 }
 
+                _logger.LogInformation($"Lex Response is {JsonConvert.SerializeObject(lexResponse)}");
                 return Ok(lexResponse);
 
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
-        }
-
-        private void SetRecognizeTextLexRequest(LexRequest request, out RecognizeTextRequest lexRequest)
-        {
-            var botId = _configuration.GetValue<string>("LexBotSettings:BotId");
-            var botAliasId = _configuration.GetValue<string>("LexBotSettings:BotAliasId");
-            var botLanuage = _configuration.GetValue<string>("LexBotSettings:BotLanguage");
-            var botSessionId = _configuration.GetValue<string>("LexBotSettings:SessionId");
-
-            lexRequest = new RecognizeTextRequest
-            {
-                BotAliasId = botAliasId,
-                BotId = botId,
-                LocaleId = botLanuage,
-                SessionId = botSessionId,
-                Text = request.InputText
-            };
         }
     }
   }
