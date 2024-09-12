@@ -30,9 +30,9 @@ namespace LexBotBroker
       [HttpPost]
       public async Task<IActionResult> Post([FromBody] LexRequest request)
       {
-            try
-            {
-                _logger.LogInformation("Entering the LexBot2Controller");
+      try
+      {
+        _logger.LogInformation("Entering the LexBot2Controller");
                 _logger.LogInformation($"Lex Request: {request.InputText.ToString()}");
                 string botId, botAliasId;
                 var botLanuage = _configuration.GetValue<string>("LexBotSettings:BotLanguage");
@@ -40,8 +40,9 @@ namespace LexBotBroker
 
                 RecognizeTextRequest lexRequest;
 
-                if (request.InputText.Contains("strategy", StringComparison.OrdinalIgnoreCase) && 
-                    request.InputText.Contains("create", StringComparison.OrdinalIgnoreCase)) 
+                if ((request.InputText.Contains("strategy", StringComparison.OrdinalIgnoreCase) && 
+                    request.InputText.Contains("create", StringComparison.OrdinalIgnoreCase)) || 
+                    request.InputText.Contains("time", StringComparison.OrdinalIgnoreCase))
                 { 
                     botId = _configuration.GetValue<string>("LexBotSettings:BotId");
                     botAliasId = _configuration.GetValue<string>("LexBotSettings:BotAliasId");
@@ -92,11 +93,11 @@ namespace LexBotBroker
                 _logger.LogInformation($"Lex Response is {JsonConvert.SerializeObject(lexResponse)}");
                 return Ok(lexResponse);
 
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+      }
+      catch (Exception ex)
+      {
+        throw ex;
+      }
+    }
     }
   }
